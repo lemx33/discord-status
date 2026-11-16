@@ -5,12 +5,10 @@ config.json
 status.log
 status.log.old
 
-__pycache__/
-
-# Build output (build.bat)
-.build-venv/
-build/
-dist/
+# Build output (cargo / build.bat)
+/target
+/build
+/dist/
 *.spec
 config.backup.json
 config.json.tmp

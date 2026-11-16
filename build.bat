@@ -1,18 +1,16 @@
 @echo off
-rem Builds dist\DiscordStatus.exe with PyInstaller.
-rem PyInstaller is installed into a throwaway .build-venv folder, not your main Python.
+rem Builds target\release\DiscordStatus.exe and stages dist\ with everything it needs.
+rem No other toolchain is required: the Rust code has no system dependencies.
 setlocal
 cd /d "%~dp0"
 
-if not exist ".build-venv\Scripts\python.exe" (
-    python -m venv .build-venv || exit /b 1
-)
-".build-venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check "pyinstaller>=6,<7" || exit /b 1
+cargo build --release || exit /b 1
 
-".build-venv\Scripts\pyinstaller.exe" --noconfirm --clean --onefile --windowed ^
-    --name DiscordStatus --icon icon.ico ^
-    --add-data "config.example.json;." --add-data "icon.ico;." ^
-    status.py || exit /b 1
+if not exist "dist" mkdir dist
+copy /y "target\release\DiscordStatus.exe" "dist\DiscordStatus.exe" >nul
+copy /y "config.example.json" "dist\config.example.json" >nul
+copy /y "icon.ico" "dist\icon.ico" >nul
+copy /y "LICENSE" "dist\LICENSE" >nul
 
 echo.
 echo Built dist\DiscordStatus.exe
